@@ -8,6 +8,15 @@ In the project directory, you can run:
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Note: If you don't want 3000 port, there are 3 ways to change it - 
+    a. set environment variable (in case of Windows, set PORT=4003)
+    b. set port in package.json
+        ....
+        "scripts": {
+            "start": "PORT=4003 && react-scripts start",
+            ...
+    c. create a .env file in root folder and save this:
+        PORT=4003
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
