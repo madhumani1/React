@@ -1,3 +1,9 @@
+# React
+
+[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
+
+[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,3 +74,166 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### `refs`
+- Refs provide a way to access DOM nodes or React elements created in render method.
+- Parent component interact with child component (App as parent to its children Button or Text) through props
+- Children interact with their parent using state. 
+- Refs make it possible to access DOM nodes directly within React.
+
+### `useRef`
+The below exmaple finds out how many time the page is rendered. 
+```
+import React, { useState, useEffect } from 'react'
+
+export default function UseRefDemo() {
+    const [name, setName] = useState('');
+    const [renderCount, setRenderCount] = useState(0);
+
+    useEffect(() => {
+        setRenderCount(prevRenderCount => prevRenderCount+1)
+    })
+
+    return (
+        <>
+            <input value={name} onChange={event => setName(event.target.value)} />
+            <div>My name is {name}...and I am not a terrorist</div>  
+            <div>I rendered {renderCount} times</div>
+        </>
+    )
+}
+```
+
+This program will go into infinite loop.
+	```
+	useEffect(() => {
+        setRenderCount(prevRenderCount => prevRenderCount+1)
+    })
+    ```
+
+When you update your state, you cause the component to re-render.
+So the first time your component renders, ```setRenderCount(prevRenderCount => prevRenderCount+1)``` gonna set the state which causes the component to re-render
+and then just gonna set the state again and re-render. There is no way you can do this with state.
+The solution is to use something called refs.
+A ref is very similar to state and that it persist between renders of your component but the important thing about ref vs state is that a ref does not cause your component to re-update when the components gets changed. 
+So instead of using a state here let us use ref.
+```
+import React, { useState, useRef } from 'react'
+
+export default function UseRefDemo() {
+    const [name, setName] = useState('');
+    const renderCount = useRef(0); 
+
+    useEffect(() => {
+        setRenderCount(prevRenderCount => prevRenderCount+1)
+    })
+
+    return (
+        <>
+            <input value={name} onChange={event => setName(event.target.value)} />
+            <div>My name is {name}...and I am not a terrorist</div>  
+            <div>I rendered {renderCount} times</div>
+        </>
+    )
+}
+```
+
+useRef returns an object and object looks like this:
+    ```{current: 0}```
+
+It has a single property called current. By default set that current value to 0 because that's what we passed in to useRef. ```renderCount``` is just an object with a current property and when we update that property that is what gets persisted between different renders.
+So, instead of 
+    ```
+    useEffect(() => {
+        setRenderCount(prevRenderCount => prevRenderCount+1)
+    })
+    ```
+We can take our ```renderCount``` and we can take the current property on it and we can just set that 
+    ```
+    useEffect(() => {
+        renderCount.current = renderCount.current+1
+    })
+    ```
+```
+import React, { useState, useEffect, useRef } from 'react'
+
+export default function UseRefDemo() {
+    const [name, setName] = useState('');
+    //const [renderCount, setRenderCount] = useState(0);
+    const renderCount = useRef(0);
+
+    useEffect(() => {
+        //setRenderCount(prevRenderCount => prevRenderCount+1)
+        renderCount.current=renderCount.current+1;
+    })
+
+    return (
+        <>
+            <input value={name} onChange={event => setName(event.target.value)} />
+            <div>My name is {name}...and I am not a terrorist</div>  
+            <div>I rendered {renderCount.current} times</div>
+        </>
+    )
+}
+```
+
+Another use case is to set focus on a specific text box
+```
+import React, { useState, useEffect, useRef } from 'react'
+
+export default function UseRefDemo() {
+    const [name, setName] = useState('');
+    //const [renderCount, setRenderCount] = useState(0);
+    const renderCount = useRef(0);
+    const inputRef = useRef();
+
+    useEffect(() => {
+        //setRenderCount(prevRenderCount => prevRenderCount+1)
+        renderCount.current=renderCount.current+1;
+    })
+
+    function focus()  {
+        inputRef.current.focus();
+        console.log('Madhukar: ',inputRef.current);
+    }
+
+    return (
+        <>
+            <input ref={inputRef} value={name} onChange={event => setName(event.target.value)} />
+            <div>My name is {name}...and I am not a terrorist</div>  
+            {/* <div>I rendered {renderCount.current} times</div> */}
+            <button onClick={focus}>Focus</button>
+        </>
+    )
+}
+```
+
+Use Case 3: store previous value of a state
+```
+import React, { useState, useEffect, useRef } from 'react'
+
+export default function UseRefDemo() {
+    const [name, setName] = useState('');
+    const renderCount = useRef(0);
+    const prevName = useRef('');
+
+    useEffect(() => {
+        //setRenderCount(prevRenderCount => prevRenderCount+1)
+        //renderCount.current=renderCount.current+1;
+        prevName.current = name
+    }, [name])
+
+
+    return (
+        <>
+            <input value={name} onChange={event => setName(event.target.value)} />
+            <div>My name is {name}...and previous name was {prevName.current}</div>
+        </>
+    )
+}
+
+```
+
+
+
