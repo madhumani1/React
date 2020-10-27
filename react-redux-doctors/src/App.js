@@ -1,26 +1,29 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import DoctorsList from './components/DoctorsList';
 
-function App() {
-  const [count, setcount] = useState(() => {
-    console.log('run function')
-    return 0;
-  })
+function App(props) {
+  // const [count, setcount] = useState(() => {
+  //   console.log('run function')
+  //   return 0;
+  // })
 
-  function decrementCount() {
-    setcount(prevCount => prevCount-1)
-  }
+  // function decrementCount() {
+  //   setcount(prevCount => prevCount-1)
+  // }
 
-  function incrementCount() {
-    setcount(prevCount => prevCount+1)
-  }
+  // function incrementCount() {
+  //   setcount(prevCount => prevCount+1)
+  // }
 
   return (
     <>
-    <button onClick={decrementCount}>-</button>
+    {/* <button onClick={decrementCount}>-</button>
   <span>{count}</span>
-    <button onClick={incrementCount}>+</button>
+    <button onClick={incrementCount}>+</button> */}
+    <h1>Hello {props.name}</h1>
+    <DoctorsList />
     </>
   );
   //return (
