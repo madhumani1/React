@@ -10,7 +10,14 @@ export default class DoctorsList extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:4001/api/v1/doctors')
+        fetch('http://localhost:4001/api/v1/doctors', {
+            method: 'get',
+            dataType: 'json',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }
+        })
             .then(response => response.json())
             .then(result => this.setState({doctors: result}));
         console.log('doctors: ',this.state);
@@ -23,7 +30,7 @@ export default class DoctorsList extends Component {
     }
 
     handleAddDoctor(name) {
-        const newDoctor = { id: this.state.doctors.length+1, name: name };
+        const newDoctor = { id: (this.state.doctors.length+1).toString(), name: name };
         const newDoctorsList = [...this.state.doctors, newDoctor];
         this.setState({ doctors: newDoctorsList });
         

@@ -15,6 +15,7 @@ const AddDoctor = (props) => {
     const handleAddDoctor = (name) => {
         props.onAddDoctor(doctorName);
         console.log(doctorName);
+		setDoctorName('');	// to clear text box after use
     };
 
     return(
