@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import DoctorItemList from './DoctorListItem';
+import DoctorListItem from './DoctorListItem';
 import AddDoctor from './AddDoctor';
 import fetch from 'node-fetch';
 
@@ -9,7 +9,7 @@ export default class DoctorsList extends Component {
         this.state = {doctors: []};
     }
 
-    componentDidMount() {
+    componentDidMount(props) {
         fetch('http://localhost:4001/api/v1/doctors', {
             method: 'get',
             dataType: 'json',
@@ -26,28 +26,28 @@ export default class DoctorsList extends Component {
     renderDoctors() {
         // return this.state.doctors.map(doctor => <div key={doctor.id}>{doctor.name}</div>);
         return this.state.doctors.map(
-            doctor => <DoctorItemList id={doctor.id.toString()} key={doctor.id} name={doctor.name}/>)
+            doctor => <DoctorListItem key={doctor.id} id={doctor.id.toString()} name={doctor.name}/>)
     }
 
-    handleAddDoctor(name) {
-        const newDoctor = { id: (this.state.doctors.length+1).toString(), name: name };
-        const newDoctorsList = [...this.state.doctors, newDoctor];
-        this.setState({ doctors: newDoctorsList });
-        
-        const requestOptions = {
+    handleAddDoctor = (doctorName) => {
+        const newId = (this.state.doctors.length+1).toString();
+        const newDoctor = {id: newId, name: doctorName};
+        const newDoctorList = [...this.state.doctors, newDoctor];
+        this.setState({doctors: newDoctorList});
+        console.log('this.state.doctors: ',this.state.doctors);
+        fetch('http://localhost:4001/api/v1/doctor', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: newDoctor.name })
-        };
-        fetch('http://localhost:4001/api/v1/doctors', requestOptions);
+        });
     }
 
     render() {
         return (
             <>
-                <div>Doctors List</div>
-                <AddDoctor onAddDoctor={(name) => this.handleAddDoctor(name)} />
-                {this.renderDoctors()}
+                <h2>Doctors List</h2>
+                <AddDoctor onAddDoctor={(doctorName) => this.handleAddDoctor(doctorName)} />
+                <div>{this.renderDoctors()}</div>
             </>
         );
     }

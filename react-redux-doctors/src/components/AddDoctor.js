@@ -10,21 +10,22 @@ import React, { useState } from 'react';
  * to add to the list of doctors. For now, we'll do a console.log to check that 
  * we have the correct value for the doctor name.
  */
-const AddDoctor = (props) => {
-    const [doctorName, setDoctorName] = useState('');
-    const handleAddDoctor = (name) => {
+export default function AddDoctor(props) {
+    const [doctorName, setDoctorName] = useState(() => {
+        console.log('run function');
+    });
+
+    const handleAddDoctor = () => {
         props.onAddDoctor(doctorName);
-        console.log(doctorName);
-		setDoctorName('');	// to clear text box after use
+        console.log('doctorName: ',doctorName);
+    		setDoctorName('');	// to clear text box after use
     };
 
     return(
         <div>
-            <input type='text' value={doctorName} onChange={event => setDoctorName(event.target.value)} />
-            &nbsp;&nbsp;
+            <input type='text' value={doctorName} 
+                onChange={changeEvent => setDoctorName(changeEvent.target.value)}  />
             <button onClick={handleAddDoctor}>Add Doctor</button>
         </div>
     );
 };
-
-export default AddDoctor;
